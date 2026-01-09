@@ -20,19 +20,15 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   Widget build(BuildContext context) {
     final authState = ref.watch(authControllerProvider);
 
-    // Error Handling
     ref.listen(authControllerProvider, (previous, next) {
       if (next.hasError) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(next.error.toString()),
           backgroundColor: AppColors.error,
         ));
-      } else if (!next.isLoading && !next.hasError) {
-        // Login successful - the StreamBuilder in app.dart handles navigation,
-        // but we can manually print or ensure UI is ready.
-        // No manual navigation needed here usually as AuthState changes automatically.
       }
     });
+
     return Scaffold(
       body: SafeArea(
         child: Center(
@@ -41,41 +37,37 @@ class _LoginPageState extends ConsumerState<LoginPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(
-                  Icons.spa,
-                  size: 80,
-                  color: AppColors.primary,
-                ), // App Logo Placeholder
+                // --- CHANGED HERE: YOUR CUSTOM LOGO ---
+                Image.asset(
+                  'asset/logo.png', // Uses your file
+                  height: 120, // Adjust size as needed
+                  fit: BoxFit.contain,
+                ),
+                // --------------------------------------
+
                 const SizedBox(height: 20),
-                const Text(
-                  "T Kairos Shop",
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textDark,
-                  ),
-                ),
+                const Text("T Kairos Shop",
+                    style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textDark)),
                 const SizedBox(height: 10),
-                const Text(
-                  "Login to your premium account",
-                  style: TextStyle(color: AppColors.textLight),
-                ),
+                const Text("Login to your premium account",
+                    style: TextStyle(color: AppColors.textLight)),
                 const SizedBox(height: 40),
                 TextField(
                   controller: _emailCtrl,
                   decoration: const InputDecoration(
-                    labelText: 'Email',
-                    prefixIcon: Icon(Icons.email_outlined),
-                  ),
+                      labelText: 'Email',
+                      prefixIcon: Icon(Icons.email_outlined)),
                 ),
                 const SizedBox(height: 16),
                 TextField(
                   controller: _passCtrl,
                   obscureText: true,
                   decoration: const InputDecoration(
-                    labelText: 'Password',
-                    prefixIcon: Icon(Icons.lock_outline),
-                  ),
+                      labelText: 'Password',
+                      prefixIcon: Icon(Icons.lock_outline)),
                 ),
                 const SizedBox(height: 24),
                 SakuraButton(
@@ -89,30 +81,22 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 OutlinedButton.icon(
                   onPressed: () =>
                       ref.read(authControllerProvider.notifier).googleLogin(),
-                  icon: const Icon(
-                    Icons.login,
-                  ), // Replace with Google Logo SVG in production
+                  icon: const Icon(Icons.login),
                   label: const Text("Sign in with Google"),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: AppColors.textDark,
                     side: const BorderSide(color: AppColors.textLight),
                     padding: const EdgeInsets.symmetric(
-                      vertical: 12,
-                      horizontal: 24,
-                    ),
+                        vertical: 12, horizontal: 24),
                   ),
                 ),
                 const SizedBox(height: 20),
                 TextButton(
-                  onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const SignupPage()),
-                  ),
-                  child: const Text(
-                    "Don't have an account? Sign Up",
-                    style: TextStyle(color: AppColors.primary),
-                  ),
-                ),
+                  onPressed: () => Navigator.push(context,
+                      MaterialPageRoute(builder: (_) => const SignupPage())),
+                  child: const Text("Don't have an account? Sign Up",
+                      style: TextStyle(color: AppColors.primary)),
+                )
               ],
             ),
           ),
