@@ -3,7 +3,7 @@ flutter clean
 flutter pub get
 flutter run
 
-
+flutter build apk --split-per-abi --release
 
 # === START: COPY EVERYTHING BELOW THIS LINE ===
 

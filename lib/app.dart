@@ -1,4 +1,4 @@
-import 'dart:ui'; // Required for BackdropFilter (Glass effect)
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:animations/animations.dart';
@@ -14,13 +14,13 @@ import 'features/home/home_page.dart';
 import 'features/market/market_page.dart';
 import 'features/cart/cart_page.dart';
 import 'features/profile/profile_page.dart';
+import 'features/message/message_page.dart'; // Import Message Page
 
 class TKairosApp extends ConsumerWidget {
   const TKairosApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Watch authentication state
     final authState = ref.watch(authStateProvider);
 
     return MaterialApp(
@@ -53,22 +53,24 @@ class MainScaffold extends StatefulWidget {
 class _MainScaffoldState extends State<MainScaffold> {
   int _currentIndex = 0;
 
-  // Pages List
-  final List<Widget> _pages = const [
-    HomePage(),
-    MarketPage(),
-    CartPage(),
-    Scaffold(body: Center(child: Text('Message (Coming Soon)'))),
-    ProfilePage(),
+  // Deep Pink for High Contrast Active State
+  final Color _activeColor = const Color(0xFFE91E63);
+
+  // The 5 Tabs (Connected MessagePage)
+  final List<Widget> _pages = [
+    const HomePage(),
+    const MarketPage(),
+    const CartPage(),
+    const MessagePage(), // Real Chat Page
+    const ProfilePage(),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // CRITICAL: Allows content to scroll behind the glass navigation bar
       extendBody: true,
 
-      // Smooth Fade/Slide Page Transition
+      // Smooth Fade Transition (No Jump)
       body: PageTransitionSwitcher(
         duration: const Duration(milliseconds: 400),
         transitionBuilder: (child, animation, secondaryAnimation) {
@@ -82,18 +84,18 @@ class _MainScaffoldState extends State<MainScaffold> {
         child: _pages[_currentIndex],
       ),
 
-      // 🌸 Premium Glass Bottom Navigation Bar with Bounce Animation
+      // 🌸 Glass Bottom Navigation Bar
       bottomNavigationBar: ClipRRect(
         borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
           child: Container(
-            height: 85, // Taller to accommodate bouncing icons
+            height: 85,
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.7), // Glass opacity
+              color: Colors.white.withOpacity(0.85),
               borderRadius:
                   const BorderRadius.vertical(top: Radius.circular(24)),
-              border: Border.all(color: Colors.white.withOpacity(0.4)),
+              border: Border.all(color: Colors.white.withOpacity(0.6)),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.05),
@@ -106,46 +108,50 @@ class _MainScaffoldState extends State<MainScaffold> {
               currentIndex: _currentIndex,
               onTap: (index) => setState(() => _currentIndex = index),
               type: BottomNavigationBarType.fixed,
-              backgroundColor: Colors.transparent, // Handled by Container
+              backgroundColor: Colors.transparent,
               elevation: 0,
-
-              // Text Styling
               showSelectedLabels: true,
               showUnselectedLabels: true,
-              selectedItemColor: AppColors.primary,
-              unselectedItemColor: Colors.grey.shade400,
+              selectedItemColor: _activeColor,
+              unselectedItemColor: Colors.grey.shade500,
               selectedLabelStyle: const TextStyle(
-                  fontSize: 11, fontWeight: FontWeight.w600, height: 2),
+                  fontSize: 11, fontWeight: FontWeight.bold, height: 2),
               unselectedLabelStyle: const TextStyle(
                   fontSize: 11, fontWeight: FontWeight.w500, height: 2),
-
               items: [
                 BottomNavigationBarItem(
                   icon: _glassIcon(
-                      icon: Icons.home_outlined, active: _currentIndex == 0),
+                      icon: Icons.home_outlined,
+                      active: _currentIndex == 0,
+                      color: _activeColor),
                   label: 'Home',
                 ),
                 BottomNavigationBarItem(
                   icon: _glassIcon(
                       icon: Icons.storefront_outlined,
-                      active: _currentIndex == 1),
+                      active: _currentIndex == 1,
+                      color: _activeColor),
                   label: 'Market',
                 ),
                 BottomNavigationBarItem(
                   icon: _glassIcon(
                       icon: Icons.shopping_bag_outlined,
-                      active: _currentIndex == 2),
+                      active: _currentIndex == 2,
+                      color: _activeColor),
                   label: 'Cart',
                 ),
                 BottomNavigationBarItem(
                   icon: _glassIcon(
                       icon: Icons.chat_bubble_outline,
-                      active: _currentIndex == 3),
+                      active: _currentIndex == 3,
+                      color: _activeColor),
                   label: 'Message',
                 ),
                 BottomNavigationBarItem(
                   icon: _glassIcon(
-                      icon: Icons.person_outline, active: _currentIndex == 4),
+                      icon: Icons.person_outline,
+                      active: _currentIndex == 4,
+                      color: _activeColor),
                   label: 'Me',
                 ),
               ],
@@ -157,38 +163,38 @@ class _MainScaffoldState extends State<MainScaffold> {
   }
 }
 
-/// 🌸 Animated Glass Icon with "Pop" Scale Effect
+/// 🌸 Animated Glass Icon (NO POP UP)
+/// Just fades color and background smoothly
 Widget _glassIcon({
   required IconData icon,
   required bool active,
+  required Color color,
 }) {
   return AnimatedContainer(
-    duration: const Duration(milliseconds: 350),
-    curve: Curves.easeOutBack, // Bouncy effect
+    duration: const Duration(milliseconds: 300),
+    curve: Curves.easeInOut, // Smooth curve, no bounce
 
-    // SCALE TRANSFORMATION: Grow by 25% if active
-    transform: Matrix4.identity()..scale(active ? 1.25 : 1.0),
-    transformAlignment: Alignment.center,
+    // Removed Matrix Transform (No Scale/Translate)
 
     padding: const EdgeInsets.all(8),
     decoration: BoxDecoration(
       shape: BoxShape.circle,
-      color: active ? AppColors.primary.withOpacity(0.15) : Colors.transparent,
+      // Background remains soft light pink
+      color: active ? AppColors.primary.withOpacity(0.2) : Colors.transparent,
     ),
     child: Icon(
-      active ? _getFilledIcon(icon) : icon, // Swap to filled icon
+      active ? _getFilledIcon(icon) : icon,
       size: 24,
-      color: active ? AppColors.primary : Colors.grey.shade500,
+      color: active ? color : Colors.grey.shade500,
     ),
   );
 }
 
-// Helper to switch outlined icons to filled icons automatically
 IconData _getFilledIcon(IconData icon) {
   if (icon == Icons.home_outlined) return Icons.home_rounded;
   if (icon == Icons.storefront_outlined) return Icons.storefront_rounded;
   if (icon == Icons.shopping_bag_outlined) return Icons.shopping_bag_rounded;
   if (icon == Icons.chat_bubble_outline) return Icons.chat_bubble_rounded;
   if (icon == Icons.person_outline) return Icons.person_rounded;
-  return icon; // Fallback
+  return icon;
 }
