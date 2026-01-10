@@ -46,13 +46,21 @@
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 
-    <!-- PERMISSIONS ADDED HERE -->
+    <!-- ========================================== -->
+    <!--       REQUIRED APP PERMISSIONS             -->
+    <!-- ========================================== -->
+
+    <!-- 1. Gallery: For uploading Profile Pictures and Post Images/Videos -->
     <key>NSPhotoLibraryUsageDescription</key>
-    <string>We need access to your gallery to upload posts.</string>
+    <string>We need access to your gallery to let you upload profile photos and create posts with images or videos.</string>
+
+    <!-- 2. Camera: For taking Photos and recording Videos directly -->
     <key>NSCameraUsageDescription</key>
-    <string>We need access to your camera to capture posts.</string>
+    <string>We need access to your camera to let you capture photos and videos for your posts.</string>
+
+    <!-- 3. Microphone: For Voice Chat and Video Audio -->
     <key>NSMicrophoneUsageDescription</key>
-    <string>We need access to microphone for video.</string>
+    <string>We need access to your microphone to let you record voice messages and record videos with sound.</string>
 
 </dict>
 </plist>

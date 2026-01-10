@@ -5,6 +5,7 @@ flutter run
 
 flutter build apk --split-per-abi --release
 
+
 # === START: COPY EVERYTHING BELOW THIS LINE ===
 
 # Step 1: Initialize a new Git repository in your folder
